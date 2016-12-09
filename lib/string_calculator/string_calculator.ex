@@ -8,22 +8,21 @@ defmodule StringCalculator do
       |> evaluate_separators
       |> replace("\n",",")
       |> split(",")
-      |> Enum.map(&String.to_integer(&1))
+      |> Enum.map(&to_integer(&1))
       |> Enum.reduce(0, fn(x, acc) -> x + acc end)
     else
       s
       |> replace("\n",",")
       |> split(",")
-      |> Enum.map(&String.to_integer(&1))
+      |> Enum.map(&to_integer(&1))
       |> Enum.reduce(0, fn(x, acc) -> x + acc end)
     end
   end
 
   defp evaluate_separators(s) do
-    separator = at s, 2
     s
     |> slice(4..-1)
-    |> replace(separator, ",")
+    |> replace(at(s, 2), ",")
   end
 
 end
