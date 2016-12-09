@@ -8,8 +8,8 @@ defmodule StringCalculator do
     |> replace("\n",",")
     |> split(",")
     |> Enum.map(&to_integer(&1))
-    |> throw_error_with_negative_numbers
-    |> Enum.reduce(0, fn(x, acc) -> x + acc end)
+    |> get_negatives
+    |> handle_tuple_with_numbers
   end
 
   defp handle_the_separator(<< "//", separator :: binary-size(1), "\n", rest :: binary >>) do
@@ -19,12 +19,16 @@ defmodule StringCalculator do
 
   defp handle_the_separator(s), do: s
 
-  defp throw_error_with_negative_numbers(list) do
-    negatives = Enum.filter(list, &(&1 < 0))
-    unless Enum.empty?(negatives) do
-      raise ArgumentError, "negatives not allowed " <> Enum.join(negatives," ")
-    end
-    list
+  defp get_negatives(list) do
+    { list, Enum.filter(list, &(&1 < 0)) }
+  end
+
+  defp handle_tuple_with_numbers({list, []}) do
+    list |> Enum.reduce(0, fn(x, acc) -> x + acc end)
+  end
+
+  defp handle_tuple_with_numbers({_, negatives}) do
+    raise ArgumentError, "negatives not allowed " <> Enum.join(negatives," ")
   end
 
 end
