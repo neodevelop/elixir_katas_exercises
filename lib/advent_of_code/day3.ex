@@ -68,4 +68,3 @@ defmodule AdventOfCode.Day3 do
   end
 
 end
-
