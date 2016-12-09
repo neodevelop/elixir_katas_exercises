@@ -28,4 +28,10 @@ defmodule StringCalculatorTest do
     assert add("//#\n1#2#3#4#5#6") == 21
   end
 
+  test "the string calculator raise an error with negative numbers" do
+    assert_raise ArgumentError, "negatives not allowed -2 -4 -6", fn ->
+      add("//#\n1#-2#3#-4#5#-6")
+    end
+  end
+
 end
