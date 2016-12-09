@@ -16,4 +16,16 @@ defmodule StringCalculatorTest do
     assert add("9,10") == 19
     assert add("1,2,3,4") == 10
   end
+
+  test "the string calculator supports new line as separator" do
+    assert add("1\n2") == 3
+    assert add("9\n10") == 19
+    assert add("1\n2,3,4") == 10
+  end
+  test "the string calculator supports any custom separator" do
+    assert add("//;\n1;2;3;4") == 10
+    assert add("//$\n1$2$3$4$5") == 15
+    assert add("//#\n1#2#3#4#5#6") == 21
+  end
+
 end
