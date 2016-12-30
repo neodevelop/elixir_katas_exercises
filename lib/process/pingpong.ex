@@ -4,7 +4,7 @@ defmodule PingPong do
     receive do
       {pid, x} ->
         :timer.sleep 1000
-        IO.puts("Ping!")
+        IO.puts("Ping! #{x}")
         send pid, {self, x}
         ping(n)
     end
@@ -12,19 +12,22 @@ defmodule PingPong do
 
   def pong(n) do
     receive do
+      {pid, 0} ->
+        Process.exit pid, :kill
+        Process.exit self, :kill
       {pid, x} ->
         :timer.sleep 1000
-        IO.puts("Pong!")
-        send pid, {self, x}
+        IO.puts("Pong! #{x}")
+        send pid, {self, x - 1}
         pong(n)
     end
   end
 
-  def start() do
+  def start(n) do
     IO.puts __MODULE__
-    ping = spawn(__MODULE__, :ping, [10])
-    pong = spawn(__MODULE__, :pong, [10])
-    send ping, {pong, 10}
+    ping = spawn(__MODULE__, :ping, [n])
+    pong = spawn(__MODULE__, :pong, [n])
+    send ping, {pong, n}
   end
 
 end
