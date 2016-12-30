@@ -3,15 +3,15 @@ defmodule Toiistori do
   end
 
   def is_the_slowest(_toys) do
-    _toys |> Enum.max_by fn({k,v}) ->
+    _toys |> Enum.max_by(fn({k,v}) ->
       v
-    end
+    end)
   end
 
   def is_the_fastest(_toys) do
-    _toys |> Enum.min_by fn({k,v}) ->
+    _toys |> Enum.min_by(fn({k,v}) ->
       v
-    end
+    end)
   end
 
   def the_time_for_this_pair({_,_},{_, time}) do
