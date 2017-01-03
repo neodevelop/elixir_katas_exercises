@@ -11,6 +11,7 @@ defmodule GitHub.User do
     |> make_a_request
     |> parse_response
     |> extract_followers_info
+    |> make_a_tuple
   end
 
   defp create_url(username) do
@@ -27,15 +28,18 @@ defmodule GitHub.User do
     |> JSON.decode
   end
 
-  defp parse_response({_, %HTTPoison.Response{body: body, headers: headers, status_code: _}}) do
-    IO.inspect body
-    IO.inspect headers
+  defp parse_response({_, error}) do
+    IO.inspect error
     raise "ops"
   end
 
   defp extract_followers_info({:ok, users_info}) do
     users_info
     |> Enum.map(fn %{"id" => id, "login" => login} -> {id, login} end)
+  end
+
+  defp make_a_tuple(followers, username) do
+    {username, followers}
   end
 
 end
