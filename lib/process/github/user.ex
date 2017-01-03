@@ -11,7 +11,7 @@ defmodule GitHub.User do
     |> make_a_request
     |> parse_response
     |> extract_followers_info
-    |> make_a_tuple
+    |> make_a_tuple(username)
   end
 
   defp create_url(username) do
