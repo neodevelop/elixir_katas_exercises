@@ -8,14 +8,18 @@ defmodule GitHub.Organization do
   def members_of(organization_name) do
     organization_name
     |> create_url
-    |> HTTPoison.get(@headers, @http_options)
+    |> make_a_request
     |> parse_response
-    |> extract_login_information
+    |> extract_members_info
   end
 
   defp create_url(organization_name) do
     @organization_members_url
     |> String.replace(":org", organization_name)
+  end
+
+  defp make_a_request(url) do
+    HTTPoison.get(url, @headers, @http_options)
   end
 
   defp parse_response({:ok, %HTTPoison.Response{body: body, headers: _headers, status_code: 200}}) do
@@ -29,7 +33,7 @@ defmodule GitHub.Organization do
     raise "ops"
   end
 
-  defp extract_login_information({:ok, users_info}) do
+  defp extract_members_info({:ok, users_info}) do
     users_info
     |> Enum.map(fn %{"id" => id, "login" => login} -> {id, login} end)
   end
