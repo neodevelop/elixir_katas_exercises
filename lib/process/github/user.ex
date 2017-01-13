@@ -5,6 +5,15 @@ defmodule GitHub.User do
   @access_token Application.get_env(:elixir_katas_exercises, :access_token)
   @headers ["Authorization": "token #{@access_token}"]
 
+  def loop do
+    receive do
+      {sender_id, username} ->
+        send sender_id, {:ok, followers_of(username)}
+      _ ->
+        send sender_id, "Unknown message"
+    end
+  end
+
   def followers_of(username) do
     username
     |> create_url
@@ -39,7 +48,7 @@ defmodule GitHub.User do
   end
 
   defp make_a_tuple(followers, username) do
-    {username, followers}
+    {username , followers}
   end
 
 end

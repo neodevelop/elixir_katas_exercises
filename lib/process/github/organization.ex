@@ -5,6 +5,15 @@ defmodule GitHub.Organization do
   @access_token Application.get_env(:elixir_katas_exercises, :access_token)
   @headers ["Authorization": "token #{@access_token}"]
 
+  def loop do
+    receive do
+      {sender_id, organization} ->
+        send sender_id, {:ok, members_of(organization)}
+      _ ->
+        loop
+    end
+  end
+
   def members_of(organization_name) do
     organization_name
     |> create_url
