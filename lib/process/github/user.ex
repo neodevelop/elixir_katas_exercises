@@ -10,8 +10,9 @@ defmodule GitHub.User do
       {sender_id, username} ->
         send sender_id, {:ok, followers_of(username)}
       _ ->
-        send sender_id, "Unknown message"
+        {:ok, "Unknown Message"}
     end
+    loop
   end
 
   def followers_of(username) do
