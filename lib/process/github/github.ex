@@ -12,4 +12,12 @@ defmodule GitHub do
   defp extract_username({_id, username}) do
     username
   end
+
+  def followers_of(users) do
+    coordinator_pid = spawn(GitHub.Coordinator, :loop, [ [], Enum.count(users) ])
+    users |> (Enum.each fn user ->
+      worker_pid = spawn(GitHub.User, :loop, [])
+      send worker_pid, {coordinator_pid, user}
+    end)
+  end
 end
