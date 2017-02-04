@@ -15,30 +15,42 @@ defmodule ProcessRing do
     end
   end
 
-  def loop(next_pid, ring_size) do
-    receive do
-      {msg, n} ->
-        IO.puts "#{msg} at #{n}"
-        send next_pid, {msg, n-1}
+  defmodule RingWorker do
+
+    def loop(idx) do
+      receive do
+        {next_id, link_pid} ->
+          IO.puts("#{idx} linked to #{next_id} at process #{inspect(link_pid)}")
+          loop idx, {next_id, link_pid}
+        _ ->
+          IO.inspect "Not recognized at idx"
+          loop idx
+      end
     end
+
+    def loop(current_id, {_next_id, next_process} = next) do
+      receive do
+        {msg, 1} ->
+          IO.puts "#{msg} at 1"
+        {msg, n} when n > 1 ->
+          IO.puts "#{msg} at #{n} at #{inspect(self)}"
+          send next_process, {msg, n-1}
+          loop current_id, next
+        _ ->
+          IO.inspect "Not recognized at id, tuple"
+      end
+    end
+
   end
 
-  def ring(sides) do
-    #pid = spawn(__MODULE__, :ring, [sides])
-    receive do
-      {n} when n == sides ->
-        IO.puts "Iguales"
-      {n} ->
-        IO.puts "No iguales"
-    end
-    ring(sides)
-  end
-
-  def ring_monitor do
-    receive do
-      msg ->
-        IO.puts "#{msg}"
-        ring_monitor
+  defmodule RingCoordinator do
+    def start(size) do
+      workers = 1..size |> Enum.map(&(spawn(RingWorker, :loop, [&1])))
+      for {pid, idx} <- Enum.with_index(workers) do
+        next_idx = rem(idx+1, size)
+        send pid, {next_idx + 1, Enum.at(workers, next_idx)}
+      end
+      workers
     end
   end
 
