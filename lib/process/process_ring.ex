@@ -1,6 +1,7 @@
 defmodule ProcessRing do
 
   def chain(0) do
+    # Change for Process.exit
     IO.puts "End of the line"
   end
 
@@ -14,21 +15,30 @@ defmodule ProcessRing do
     end
   end
 
-  def loop(ring_size, next_process) do
+  def loop(next_pid, ring_size) do
     receive do
+      {msg, n} ->
+        IO.puts "#{msg} at #{n}"
+        send next_pid, {msg, n-1}
+    end
+  end
+
+  def ring(sides) do
+    #pid = spawn(__MODULE__, :ring, [sides])
+    receive do
+      {n} when n == sides ->
+        IO.puts "Iguales"
       {n} ->
-        IO.puts "Current node #{n}"
-        :timer.sleep 1000
-        if n == ring_size do
-          send self, :exit
-        else
-          send next_process, { n+1 }
-        end
-        loop(ring_size, next_process)
-      :exit ->
-        IO.puts "The ring size and the travel are the same"
-      _ ->
-        loop(ring_size, next_process)
+        IO.puts "No iguales"
+    end
+    ring(sides)
+  end
+
+  def ring_monitor do
+    receive do
+      msg ->
+        IO.puts "#{msg}"
+        ring_monitor
     end
   end
 
