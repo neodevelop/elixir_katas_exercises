@@ -32,6 +32,7 @@ defmodule ProcessRing do
       receive do
         {msg, 1} ->
           IO.puts "#{msg} at 1"
+          loop current_id, next
         {msg, n} when n > 1 ->
           IO.puts "#{msg} at #{n} at #{inspect(self)}"
           send next_process, {msg, n-1}
