@@ -15,6 +15,46 @@ defmodule ProcessRing do
     end
   end
 
+  @doc """
+  This function with the `receive` expression can be spawned.
+  But this is calling to another function with `receive` expression,
+  so can be called twice, one with the first receive and so on.
+
+  ## Example:
+
+      iex> p = spawn(ProcessRing, :first, [10])
+      #PID<0.710.0>
+      iex> Process.alive? p
+      true
+      iex> send p, "Hello"
+      First
+      "Hello"
+      iex> Process.alive? p
+      true
+      iex> send p, "Hello"
+      "Hello"
+      iex> send p, {"World"}
+      Receiving World from send 10 the number and initial msg Hello
+      {"World"}
+      iex> Process.alive? p
+      false
+
+  """
+  def first(n) do
+    receive do
+      msg ->
+        IO.puts "First"
+        second(n, msg)
+    end
+  end
+
+  def second(m, msg) do
+    receive do
+      {message} ->
+        IO.puts "Receiving #{message} from send #{m} the number and initial msg #{msg}"
+    end
+  end
+
   defmodule RingWorker do
 
     def loop(idx) do
