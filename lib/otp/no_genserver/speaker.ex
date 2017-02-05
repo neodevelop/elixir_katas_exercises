@@ -20,15 +20,16 @@ end
 
 defmodule Server do
   def start(callback_module) do
+    parent = self
     spawn fn ->
-      loop(callback_module)
+      loop(callback_module, parent)
     end
   end
 
-  def loop(callback_module) do
+  def loop(callback_module, parent) do
     receive do
-      msg -> callback_module.handle_message(message)
+      msg -> callback_module.handle_message(message, parent)
     end
-    loop(callback_module)
+    loop(callback_module, parent)
   end
 end
