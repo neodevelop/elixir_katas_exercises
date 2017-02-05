@@ -15,6 +15,9 @@ defmodule ProcessRing do
     end
   end
 
+  ## TODO: Kill the process, handle the killing
+  ## TODO: Monitoring the processes
+
   @doc """
   This function with the `receive` expression can be spawned.
   But this is calling to another function with `receive` expression,
@@ -56,14 +59,15 @@ defmodule ProcessRing do
   end
 
   defmodule RingWorker do
+    require Logger
 
     def loop(idx) do
       receive do
         {next_id, link_pid} ->
-          IO.puts("#{idx} linked to #{next_id} at process #{inspect(link_pid)}")
+          Logger.info("#{idx} linked to #{next_id} at process #{inspect(link_pid)}")
           loop idx, {next_id, link_pid}
         _ ->
-          IO.inspect "Not recognized at idx"
+          Logger.info "Not recognized at idx"
           loop idx
       end
     end
@@ -71,20 +75,22 @@ defmodule ProcessRing do
     def loop(current_id, {_next_id, next_process} = next) do
       receive do
         {msg, 1} ->
-          IO.puts "#{msg} at 1"
+          Logger.info "#{msg} at 1"
           loop current_id, next
         {msg, n} when n > 1 ->
-          IO.puts "#{msg} at #{n} at #{inspect(self)}"
+          Logger.info "#{msg} at #{n} at #{inspect(self)}"
           send next_process, {msg, n-1}
           loop current_id, next
         _ ->
-          IO.inspect "Not recognized at id, tuple"
+          Logger.info "Not recognized at id, tuple"
       end
     end
 
   end
 
   defmodule RingCoordinator do
+    require Logger
+
     def start(size) do
       workers = 1..size |> Enum.map(&(spawn(RingWorker, :loop, [&1])))
       for {pid, idx} <- Enum.with_index(workers) do
