@@ -1,4 +1,5 @@
 defmodule BankAccountGSHideImpl do
+  use GenServer
 
   ## API
 
