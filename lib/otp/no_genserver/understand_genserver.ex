@@ -18,6 +18,9 @@ defmodule Speaker do
   end
 end
 
+# pid = spawn(Speaker, :speak, [])
+# send pid, {:say, "Hello world"}
+
 defmodule ServerWithNoResponse do
   def start(callback_module) do
     spawn fn ->

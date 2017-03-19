@@ -1,4 +1,9 @@
 defmodule GitHub.User do
+  defstruct id: 0, username: "", followers: []
+
+  def new(id, username) do
+    %__MODULE__{id: id, username: username}
+  end
 
   @followers_url "https://api.github.com/users/:username/followers"
   @http_options [ssl: [{:versions, [:'tlsv1.2']}], recv_timeout: 500]
@@ -21,7 +26,7 @@ defmodule GitHub.User do
     |> make_a_request
     |> parse_response
     |> extract_followers_info
-    |> make_a_tuple(username)
+    |> convert_to_users(username)
   end
 
   defp create_url(username) do
@@ -48,8 +53,10 @@ defmodule GitHub.User do
     |> Enum.map(fn %{"id" => id, "login" => login} -> {id, login} end)
   end
 
-  defp make_a_tuple(followers, username) do
-    {username , followers}
+  defp convert_to_users(followers, username) do
+    user = new(0, username)
+    users = for {id, login} <- followers, do: new(id, login)
+    %{user | followers: users}
   end
 
 end
