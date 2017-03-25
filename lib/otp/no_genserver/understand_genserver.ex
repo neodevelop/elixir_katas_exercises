@@ -39,7 +39,7 @@ end
 ## server = ServerWithNoResponse.start(Speaker)
 ## send server, {:say, "Hwllo world!"}
 
-defmodule PingPong do
+defmodule PingPongGS do
   def handle_message(:ping, from) do
     send from, :pong
   end
