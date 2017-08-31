@@ -14,7 +14,8 @@ defmodule AdventOfCode.Day4 do
   end
 
   def mining(secret) do
-    searchForSecret(secret, 0, '999999')
+    1..1000000
+    |> Parallel.pmap(fn x -> searchForSecret(secret, x, '999999') end)
   end
 
   def searchForSecret(_secret, n, '000000') do
@@ -25,8 +26,8 @@ defmodule AdventOfCode.Day4 do
     l = :crypto.hash(:md5 , assemble(secret,n))
         |> Base.encode16()
         |> String.to_char_list
-    searchForSecret(secret, n+1, Enum.take(l,5))
+        #searchForSecret(secret, n+1, Enum.take(l,5))
+    { n, l }
   end
-
 
 end
