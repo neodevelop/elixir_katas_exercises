@@ -40,4 +40,11 @@ defmodule AdventOfCode.Day4 do
     |> Enum.to_list
   end
 
+  def second_part(secret) do
+    1..10000000
+    |> Stream.map(fn x -> {x, AdventOfCode.Day4.makeTheHash(secret, x)} end)
+    |> Stream.filter(fn {_, h} -> Enum.take(h, 6) == '000000' end)
+    |> Enum.to_list
+  end
+
 end
