@@ -22,4 +22,21 @@ defmodule AdventOfCodeTest.Day6 do
 
   end)
 
+  [
+    {{:turn_on, [0, 0], [1, 1]}, 4},
+    {{:turn_off, [0, 0], [2, 2]}, 0},
+  ] |> Enum.each(fn {instruction, expected_lits} ->
+
+    @instruction instruction
+    @expected_lits expected_lits
+
+    test "there are #{expected_lits} lits with the instruction #{inspect instruction}" do
+      grid = AdventOfCode.Day6.generate_grid_with_size(3)
+      grid = AdventOfCode.Day6.apply_instruction(grid, @instruction)
+      lits = AdventOfCode.Day6.count_lits(grid)
+      assert lits == @expected_lits
+    end
+
+  end)
+
 end
