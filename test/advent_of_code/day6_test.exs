@@ -25,6 +25,7 @@ defmodule AdventOfCodeTest.Day6 do
   [
     {{:turn_on, [0, 0], [1, 1]}, 4},
     {{:turn_off, [0, 0], [2, 2]}, 0},
+    {{:turn_on, [1, 1], [2, 2]}, 4},
   ] |> Enum.each(fn {instruction, expected_lits} ->
 
     @instruction instruction
