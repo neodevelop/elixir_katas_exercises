@@ -33,7 +33,7 @@ defmodule AdventOfCodeTest.Day6 do
 
     test "there are #{expected_lits} lits with the instruction #{inspect instruction}" do
       grid = AdventOfCode.Day6.generate_grid_with_size(3)
-      grid = AdventOfCode.Day6.apply_instruction(grid, @instruction)
+      grid = AdventOfCode.Day6.apply_instruction(@instruction, grid)
       lits = AdventOfCode.Day6.count_lits(grid)
       assert lits == @expected_lits
     end
@@ -52,10 +52,34 @@ defmodule AdventOfCodeTest.Day6 do
 
     test "toggle grid #{inspect grid} to #{inspect grid_expected}" do
       instruction = {:toggle, [0, 0], [1, 1]}
-      grid_result = AdventOfCode.Day6.apply_instruction(@grid, instruction)
+      grid_result = AdventOfCode.Day6.apply_instruction(instruction, @grid)
       assert grid_result == @grid_expected
     end
 
   end)
+
+  test "defeat your neighbors decorating with those instructions" do
+
+    initial_grid = %{
+        {0, 0} => 0, {0, 1} => 0, {0, 2} => 0,
+        {1, 0} => 0, {1, 1} => 0, {1, 2} => 0,
+        {2, 0} => 0, {2, 1} => 0, {2, 2} => 0
+    }
+    instructions = [
+      "turn on 0,0 through 1,1",
+      "turn on 1,1 through 2,2",
+      "turn off 1,0 through 2,1",
+      "toggle 0,0 through 2,2",
+    ]
+    expected_grid = %{
+        {0, 0} => 0, {0, 1} => 0, {0, 2} => 1,
+        {1, 0} => 1, {1, 1} => 1, {1, 2} => 0,
+        {2, 0} => 1, {2, 1} => 1, {2, 2} => 0
+    }
+
+    result_grid = AdventOfCode.Day6.parse_instructions(instructions, initial_grid)
+    assert result_grid == expected_grid
+
+  end
 
 end
