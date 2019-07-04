@@ -25,4 +25,16 @@ defmodule AdventOfCode.Day6 do
     |> Enum.map(fn {e, _} -> e end)
   end
 
+  def generate_grid_with_size(n) do
+    Enum.map(0..n-1, fn _ -> Enum.map(0..n-1, fn _ -> 0 end) end)
+  end
+
+  def apply_instruction(grid, instruction) do
+    grid
+  end
+
+  def count_lits(grid) do
+    grid |> Enum.flat_map(&(&1)) |> Enum.sum
+  end
+
 end
