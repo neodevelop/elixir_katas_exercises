@@ -1,5 +1,18 @@
 defmodule AdventOfCode.Day6 do
 
+  def raw_instructions_from_file(filename) do
+    filename
+    |> File.read!
+    |> String.trim
+    |> String.split("\n")
+  end
+
+  def parse_instructions(instructions, grid) do
+    instructions
+    |> Enum.map(fn i -> parse_instruction(i) end)
+    |> apply_instructions(grid)
+  end
+
   def parse_instruction(instruction) do
     ~r/(.+) (\d+,\d+) through (\d+,\d+)/
     |> Regex.run(instruction)
@@ -29,8 +42,8 @@ defmodule AdventOfCode.Day6 do
     for i <- 0..n-1, j <- 0..n-1, do: {{i, j}, 0}, into: %{}
   end
 
-  def apply_instruction(grid, {action, [x1, y1], [x2, y2]}) do
-    lit_actions = for i <- [x1, x2], j <- [y1, y2], do: {{i,j}, apply_action(action, Map.get(grid, {i,j}))}, into: %{}
+  def apply_instruction({action, [x1, y1], [x2, y2]}, grid) do
+    lit_actions = for i <- x1..x2, j <- y1..y2, do: {{i,j}, apply_action(action, Map.get(grid, {i,j}))}, into: %{}
     Map.merge(grid, lit_actions)
   end
 
@@ -38,6 +51,12 @@ defmodule AdventOfCode.Day6 do
   defp apply_action(:turn_off, _), do: 0
   defp apply_action(:toggle, 1), do: 0
   defp apply_action(:toggle, 0), do: 1
+
+  def apply_instructions([], grid), do: grid
+  def apply_instructions([instruction | instructions], grid) do
+    new_grid = apply_instruction(instruction, grid)
+    apply_instructions(instructions, new_grid)
+  end
 
   def count_lits(grid) do
     grid
