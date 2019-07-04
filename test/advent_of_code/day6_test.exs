@@ -40,4 +40,22 @@ defmodule AdventOfCodeTest.Day6 do
 
   end)
 
+  [
+    {
+      %{{0, 0} => 0, {0, 1} => 1, {1, 0} => 1, {1, 1} => 0},
+      %{{0, 0} => 1, {0, 1} => 0, {1, 0} => 0, {1, 1} => 1}
+    },
+  ] |> Enum.each(fn {grid, grid_expected} ->
+
+    @grid grid
+    @grid_expected grid_expected
+
+    test "toggle grid #{inspect grid} to #{inspect grid_expected}" do
+      instruction = {:toggle, [0, 0], [1, 1]}
+      grid_result = AdventOfCode.Day6.apply_instruction(@grid, instruction)
+      assert grid_result == @grid_expected
+    end
+
+  end)
+
 end
