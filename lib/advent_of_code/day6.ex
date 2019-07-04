@@ -26,15 +26,24 @@ defmodule AdventOfCode.Day6 do
   end
 
   def generate_grid_with_size(n) do
-    Enum.map(0..n-1, fn _ -> Enum.map(0..n-1, fn _ -> 0 end) end)
+    for i <- 0..n-1, j <- 0..n-1, do: {{i, j}, 0}, into: %{}
   end
 
-  def apply_instruction(grid, instruction) do
-    grid
+  def apply_instruction(grid, {action, [x1, y1], [x2, y2]}) do
+    lit_actions = for i <- [x1, x2], j <- [y1, y2], do: {{i,j}, apply_action(action)}, into: %{}
+    Map.merge(grid, lit_actions)
   end
+
+  defp apply_action(:turn_on), do: 1
+  defp apply_action(:turn_off), do: 0
 
   def count_lits(grid) do
-    grid |> Enum.flat_map(&(&1)) |> Enum.sum
+    grid
+    |> Enum.map(fn
+      {{_, _}, 1} -> 1
+      _ -> 0
+    end)
+    |> Enum.sum
   end
 
 end
