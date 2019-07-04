@@ -30,12 +30,14 @@ defmodule AdventOfCode.Day6 do
   end
 
   def apply_instruction(grid, {action, [x1, y1], [x2, y2]}) do
-    lit_actions = for i <- [x1, x2], j <- [y1, y2], do: {{i,j}, apply_action(action)}, into: %{}
+    lit_actions = for i <- [x1, x2], j <- [y1, y2], do: {{i,j}, apply_action(action, Map.get(grid, {i,j}))}, into: %{}
     Map.merge(grid, lit_actions)
   end
 
-  defp apply_action(:turn_on), do: 1
-  defp apply_action(:turn_off), do: 0
+  defp apply_action(:turn_on, _), do: 1
+  defp apply_action(:turn_off, _), do: 0
+  defp apply_action(:toggle, 1), do: 0
+  defp apply_action(:toggle, 0), do: 1
 
   def count_lits(grid) do
     grid
