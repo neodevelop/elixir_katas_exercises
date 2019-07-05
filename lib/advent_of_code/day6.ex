@@ -47,10 +47,16 @@ defmodule AdventOfCode.Day6 do
     Map.merge(grid, lit_actions)
   end
 
-  defp apply_action(:turn_on, _), do: 1
-  defp apply_action(:turn_off, _), do: 0
-  defp apply_action(:toggle, 1), do: 0
-  defp apply_action(:toggle, 0), do: 1
+  # defp apply_action(:turn_on, _), do: 1
+  # defp apply_action(:turn_off, _), do: 0
+  # defp apply_action(:toggle, 1), do: 0
+  # defp apply_action(:toggle, 0), do: 1
+  #
+  # Second part
+  defp apply_action(:turn_on, n), do: n + 1
+  defp apply_action(:turn_off, 0), do: 0
+  defp apply_action(:turn_off, n), do: n - 1
+  defp apply_action(:toggle, n), do: n + 2
 
   def apply_instructions([], grid), do: grid
   def apply_instructions([instruction | instructions], grid) do
@@ -58,12 +64,20 @@ defmodule AdventOfCode.Day6 do
     apply_instructions(instructions, new_grid)
   end
 
+  # def count_lits(grid) do
+  #   grid
+  #   |> Enum.map(fn
+  #     {{_, _}, 1} -> 1
+  #     {{_, _}, 1} -> 2
+  #     _ -> 0
+  #   end)
+  #   |> Enum.sum
+  # end
+  #
+  # Second part
   def count_lits(grid) do
     grid
-    |> Enum.map(fn
-      {{_, _}, 1} -> 1
-      _ -> 0
-    end)
+    |> Enum.map(fn {{_, _}, n} -> n end)
     |> Enum.sum
   end
 
