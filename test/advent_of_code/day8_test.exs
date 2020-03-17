@@ -4,6 +4,8 @@ defmodule AdventOfCodeTest.Day8 do
 
   [
     {'""', {2, 0}},
+    {'"abc"', {5, 3}},
+    {'"aaa\"aaa"', {10, 7}},
   ] |> Enum.each(fn {input, {string_literals, memory_values}} ->
 
     @input input
