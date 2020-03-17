@@ -12,14 +12,15 @@ defmodule AdventOfCode.Day8 do
 
   def count_memory_values(input) do
     input
-    |> make_the_word("")
-    |> String.length()
+    |> List.to_string
+    |> String.codepoints
+    |> remove_quotation_marks()
+    |> evaluate_char_for_count(0)
   end
 
-  def make_the_word([?" | []], word), do: word
-  def make_the_word([?" | t], word) when length(t) > 0, do: make_the_word(t, word)
-  def make_the_word([c | t], word) when length(t) > 0 do
-    make_the_word(t, word <> List.to_string([c]))
+  def evaluate_char_for_count([], counter), do: counter
+  def evaluate_char_for_count([_ | t], counter) do
+    evaluate_char_for_count(t, counter + 1)
   end
 
   def remove_quotation_marks(input) do
