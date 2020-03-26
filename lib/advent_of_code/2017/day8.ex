@@ -24,6 +24,9 @@ defmodule AdventOfCode.Day8 do
   def evaluate_char_for_count(["\\", "x", _, _ | t], counter) do
     evaluate_char_for_count(t, counter + 1)
   end
+  def evaluate_char_for_count(["\\", _ | t], counter) do
+    evaluate_char_for_count(t, counter + 1)
+  end
   def evaluate_char_for_count(["\\" | t], counter) do
     evaluate_char_for_count(t, counter)
   end

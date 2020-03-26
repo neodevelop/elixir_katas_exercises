@@ -7,6 +7,7 @@ defmodule AdventOfCodeTest.Day8 do
     {~S/"abc"/, {5, 3}},
     {~S/"aaa\"aaa"/, {10, 7}},
     {~S/"\x27"/, {6, 1}},
+    {~S/"axoufpnbx\\ao\x61pfj\"b"/, {25, 18}},
   ] |> Enum.each(fn {input, {string_literals, memory_values}} ->
 
     @input input
