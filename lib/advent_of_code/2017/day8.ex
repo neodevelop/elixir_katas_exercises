@@ -1,5 +1,17 @@
 defmodule AdventOfCode.Day8 do
 
+  def differences_of(input) do
+    input
+    |> String.split("\n")
+    |> Enum.map(&(String.trim(&1)))
+    |> Enum.map(&(count_literals_and_memory_for/1))
+    |> compute_differences()
+  end
+
+  def compute_differences(list_of_tuples) do
+    (for {x,y} <- list_of_tuples, do: x-y) |> Enum.sum
+  end
+
   def count_literals_and_memory_for(input) do
     {count_string_literals(input), count_memory_values(input)}
   end

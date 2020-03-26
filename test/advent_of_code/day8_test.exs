@@ -22,4 +22,12 @@ defmodule AdventOfCodeTest.Day8 do
 
   end)
 
+  test "for full input compute the difference between string literals and memory values" do
+    input = ~S/""
+               "abc"
+               "aaa\"aaa"
+               "\x27"/
+    assert AdventOfCode.Day8.differences_of(input) == 12
+  end
+
 end
