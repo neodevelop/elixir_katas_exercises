@@ -6,19 +6,27 @@ defmodule AdventOfCode.Day8 do
 
   def count_string_literals(input) do
     input
+    |> String.split("")
+    |> remove_quotation_marks()
     |> remove_quotation_marks()
     |> count_chars(2) # Because quotation
   end
 
   def count_memory_values(input) do
     input
-    |> List.to_string
-    |> String.codepoints
+    |> String.split("")
+    |> remove_quotation_marks()
     |> remove_quotation_marks()
     |> evaluate_char_for_count(0)
   end
 
   def evaluate_char_for_count([], counter), do: counter
+  def evaluate_char_for_count(["\\", "x", _, _ | t], counter) do
+    evaluate_char_for_count(t, counter + 1)
+  end
+  def evaluate_char_for_count(["\\" | t], counter) do
+    evaluate_char_for_count(t, counter)
+  end
   def evaluate_char_for_count([_ | t], counter) do
     evaluate_char_for_count(t, counter + 1)
   end
@@ -31,7 +39,8 @@ defmodule AdventOfCode.Day8 do
   end
 
   def count_chars([], counter), do: counter
-  def count_chars([?" | t], counter), do: count_chars(t, counter + 2)
+  def count_chars(["\"" | t], counter), do: count_chars(t, counter + 1)
+  def count_chars(["\\\\" | t], counter), do: count_chars(t, counter)
   def count_chars([_ | t], counter), do: count_chars(t, counter + 1)
 
 end
