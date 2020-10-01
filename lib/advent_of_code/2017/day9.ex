@@ -1,52 +1,44 @@
 defmodule AdventOfCode.Day9 do
   def trace_routes(vertices) do
     vertices
-    |> uniq_origins
-    |> trace_routes(vertices)
+    |> Enum.map(&add_to_routes(&1, vertices))
+    |> Enum.map(&sum_distances/1)
+    |> min_path()
   end
 
-  defp trace_routes(cities, vertices) do
-    vertices
-    |> Enum.map(fn v ->
-      check_cities(Enum.into(cities, %{}, &{&1, false}), v, vertices, cities: [], distance: 0)
-    end)
+  def add_to_routes(v, vertices) do
+    add_to_routes(v, vertices, [])
   end
 
-  defp check_cities(_, v, [], info) do
-    IO.inspect(v)
-    info
-  end
+  def add_to_routes(nil, _, path), do: path
+  def add_to_routes(_, [], path), do: path
 
-  defp check_cities(
-         cities,
-         {a, b, d} = v,
-         vertices,
-         [cities: _travel, distance: _distance] = info
-       ) do
-    new_info = trace_route(a, d, info)
+  def add_to_routes({a, b, _} = v, vertices, path) do
     new_vertices = (vertices -- [v]) |> Enum.filter(fn {i, j, _} -> a != i end)
-    new_cities = Map.replace!(cities, a, true)
-    new_cities = Map.replace!(new_cities, b, true)
     new_v = Enum.find(new_vertices, fn {i, j, _} -> b == i || b == j end)
-    IO.inspect(new_vertices)
-    IO.inspect(new_cities)
-    IO.inspect(new_info)
-    IO.inspect(new_v)
-    IO.puts("**************************")
-
-    case Enum.all?(new_cities, fn {_, b} -> b end) do
-      true -> trace_route(b, 0, info)
-      false -> check_cities(new_cities, new_v, new_vertices, new_info)
-    end
+    add_to_routes(new_v, new_vertices, path ++ [swap_point(v, new_v)])
   end
 
-  defp trace_route(city, d, cities: cities, distance: distance) do
-    [cities: cities ++ [city], distance: distance + d]
+  def swap_point(v, nil), do: v
+
+  def swap_point({origin, destination, d}, {_origin, destination, _}) do
+    {origin, destination, d}
   end
 
-  defp uniq_origins(vertices) do
-    for({a, b, _} <- vertices, do: [a, b])
-    |> Enum.concat()
-    |> Enum.uniq()
+  def swap_point({origin, destination, d}, {destination, _origin, _}) do
+    {origin, destination, d}
+  end
+
+  def sum_distances(route) do
+    distance = for({_, _, d} <- route, do: d) |> Enum.sum()
+    %{route: route, distance: distance}
+  end
+
+  def min_path(routes) do
+    minimal =
+      routes
+      |> Enum.min_by(& &1.distance)
+
+    [routes: routes, min: minimal]
   end
 end
