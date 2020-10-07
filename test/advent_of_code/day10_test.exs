@@ -1,21 +1,20 @@
 defmodule AdventOfCodeTest.Day10Test do
   use ExUnit.Case
 
-  test "zero step" do
-    s = "1"
-    result = AdventOfCode.Day10.look_and_say(s)
-    assert "11" == result
-  end
+  [
+    {"1", "11"},
+    {"11", "21"},
+    {"21", "1211"},
+    {"1211", "111221"},
+    {"111221", "312211"}
+  ]
+  |> Enum.each(fn {input, output} ->
+    @input input
+    @output output
 
-  test "first step" do
-    s = "1211"
-    result = AdventOfCode.Day10.look_and_say(s)
-    assert "111221" == result
-  end
-
-  test "second step" do
-    s = "111221"
-    result = AdventOfCode.Day10.look_and_say(s)
-    assert "312211" == result
-  end
+    test "'#{input}' becomes to '#{output}'" do
+      result = AdventOfCode.Day10.look_and_say(@input)
+      assert @output == result
+    end
+  end)
 end
