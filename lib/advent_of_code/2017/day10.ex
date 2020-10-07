@@ -41,22 +41,13 @@ defmodule AdventOfCode.Day10 do
     {[], [c | group], c}
   end
 
-  defp group_chars(c, [h | t] = _chars, group) do
-    new_group =
-      case String.equivalent?(c, h) do
-        true ->
-          [c | group]
+  defp group_chars(c, [h | t] = chars, group) do
+    case String.equivalent?(c, h) do
+      true ->
+        group_chars(h, t, [h | group])
 
-        false ->
-          group
-      end
-
-    case t do
-      [] ->
-        {[], new_group, h}
-
-      _ ->
-        group_chars(h, t, new_group)
+      false ->
+        {t, [c | group], h}
     end
   end
 
