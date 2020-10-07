@@ -1,7 +1,5 @@
 defmodule AdventOfCode.Day10 do
   def look_and_say(word) do
-    IO.puts("************")
-
     word
     |> make_list()
     |> process()
@@ -24,12 +22,20 @@ defmodule AdventOfCode.Day10 do
     group(t, h, groups)
   end
 
-  def group([], nil, groups) do
-    groups
-  end
+  def group([], c, groups) do
+    if groups == [] do
+      [[c]]
+    else
+      [h | _] = groups
 
-  def group([], c, groups) when not is_nil(c) do
-    [[c] | groups]
+      case Enum.all?(h, fn e -> String.equivalent?(e, c) end) do
+        true ->
+          groups
+
+        false ->
+          [[c]] ++ groups
+      end
+    end
   end
 
   def group(chars, c, groups) do
@@ -41,7 +47,7 @@ defmodule AdventOfCode.Day10 do
     {[], [c | group], c}
   end
 
-  defp group_chars(c, [h | t] = chars, group) do
+  defp group_chars(c, [h | t] = _chars, group) do
     case String.equivalent?(c, h) do
       true ->
         group_chars(h, t, [h | group])
