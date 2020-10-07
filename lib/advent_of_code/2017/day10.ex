@@ -1,11 +1,15 @@
 defmodule AdventOfCode.Day10 do
-  def look_and_say(word) do
+  def look_and_say(word, n \\ 1)
+  def look_and_say(word, 0), do: word
+
+  def look_and_say(word, n) do
     word
     |> make_list()
     |> process()
     |> Enum.reverse()
     |> count_uniques()
     |> Enum.join()
+    |> look_and_say(n - 1)
   end
 
   def make_list(s) do
