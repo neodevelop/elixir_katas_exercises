@@ -22,8 +22,14 @@ defmodule AdventOfCode.Year2017.Day2 do
       |> Enum.map(&String.to_integer/1)
     end)
     |> Enum.map(fn line ->
-      [h | _] = for x <- line, y <- line, x != y, rem(x, y) == 0, do: floor(x / y)
-      h
+      for(
+        x <- line,
+        y <- line,
+        x != y,
+        rem(x, y) == 0,
+        do: floor(x / y)
+      )
+      |> List.first()
     end)
     |> Enum.sum()
   end
