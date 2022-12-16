@@ -1,0 +1,19 @@
+defmodule AdventOfCode.Year2020.Day3Test do
+  use ExUnit.Case
+
+  setup do
+    %{
+      guide: """
+      A Y
+      B X
+      C Z
+      """
+    }
+  end
+
+  test "get total score for strategy guide", %{guide: guide} do
+    assert 15 == AdventOfCode.Year2022.Day2.compute_score(guide)
+  end
+
+end
+
