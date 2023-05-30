@@ -15,7 +15,6 @@ defmodule AdventOfCode.Day7 do
     circuit
     |> circuit_in_operators()
     |> Enum.filter(&get_operations/1)
-    |> IO.inspect()
     |> apply_operations(initial_values)
   end
 
@@ -66,6 +65,30 @@ defmodule AdventOfCode.Day7 do
     |> Map.get(v)
     |> Bitwise.bnot()
     |> Kernel.+(@limit)
+  end
+
+  defp apply_single_operation([a, "AND", b], values) do
+    value_a = Map.get(values, a)
+    value_b = Map.get(values, b)
+    Bitwise.band(value_a, value_b)
+  end
+
+  defp apply_single_operation([a, "OR", b], values) do
+    value_a = Map.get(values, a)
+    value_b = Map.get(values, b)
+    Bitwise.bor(value_a, value_b)
+  end
+
+  defp apply_single_operation([a, "LSHIFT", b], values) do
+    value_a = Map.get(values, a)
+    value_b = String.to_integer(b)
+    Bitwise.bsl(value_a, value_b)
+  end
+
+  defp apply_single_operation([a, "RSHIFT", b], values) do
+    value_a = Map.get(values, a)
+    value_b = String.to_integer(b)
+    Bitwise.bsr(value_a, value_b)
   end
 
   defp apply_single_operation(operation, _values) do
