@@ -4,7 +4,7 @@ defmodule AdventOfCode.Day7 do
   def emulate_the_circuit(circuit) do
     circuit
     |> circuit_in_operators()
-    |> apply_operations()
+    |> IO.inspect()
   end
 
   defp circuit_in_operators(circuit) do
@@ -13,6 +13,7 @@ defmodule AdventOfCode.Day7 do
     |> String.split("\n")
     |> Enum.map(&split_operations/1)
     |> Enum.map(&transform_operations/1)
+    |> Enum.map(&transform_numbers/1)
   end
 
   defp split_operations(string_operator) do
@@ -25,11 +26,27 @@ defmodule AdventOfCode.Day7 do
     [String.split(operation, " "), variable]
   end
 
+  defp transform_numbers([operators, variable]) do
+    new_operators =
+      operators
+      |> Enum.map(fn e ->
+        case String.match?(e, ~r/^\d$/) do
+          true -> String.to_integer(e)
+          false -> e
+        end
+      end)
+
+    [new_operators, variable]
+  end
+
   defp apply_operations(operations) do
     apply_operations(operations, operations, %{})
   end
 
   defp apply_operations([], operations, values) do
+    IO.inspect(binding(), label: "apply_operations")
+    IO.puts("Operations: #{Enum.count(operations)} - Values: #{Enum.count(values)} ")
+
     case Enum.count(operations) == Enum.count(values) do
       true -> values
       false -> apply_operations(operations, operations, values)
