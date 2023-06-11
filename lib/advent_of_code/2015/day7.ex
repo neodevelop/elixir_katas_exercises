@@ -5,7 +5,7 @@ defmodule AdventOfCode.Day7 do
   def emulate_the_circuit(circuit) do
     circuit
     |> circuit_in_operators()
-    |> apply_operations()
+    |> build_circuit()
   end
 
   defp circuit_in_operators(circuit) do
