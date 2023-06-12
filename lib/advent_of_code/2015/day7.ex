@@ -62,20 +62,18 @@ defmodule AdventOfCode.Day7 do
     case Map.has_key?(circuit, op_1) do
       true ->
         [[Map.get(circuit, op_1), operator, op_2], variable]
-        |> wire(operations, circuit)
 
       false ->
         case String.match?(op_1, @is_number) do
           true ->
             [[String.to_integer(op_1), operator, op_2], variable]
-            |> wire(operations, circuit)
 
           false ->
             operations
             |> Enum.find(fn [_, v] -> op_1 == v end)
-            |> wire(operations, circuit)
         end
     end
+    |> wire(operations, circuit)
   end
 
   defp wire([[op_1, operator, op_2], variable], operations, circuit)
@@ -83,40 +81,36 @@ defmodule AdventOfCode.Day7 do
     case Map.has_key?(circuit, op_2) do
       true ->
         [[op_1, operator, Map.get(circuit, op_2)], variable]
-        |> wire(operations, circuit)
 
       false ->
         case String.match?(op_2, @is_number) do
           true ->
             [[op_1, operator, String.to_integer(op_2)], variable]
-            |> wire(operations, circuit)
 
           false ->
             operations
             |> Enum.find(fn [_, v] -> op_2 == v end)
-            |> wire(operations, circuit)
         end
     end
+    |> wire(operations, circuit)
   end
 
   defp wire([[operator, op], variable], operations, circuit) when is_binary(op) do
     case Map.has_key?(circuit, op) do
       true ->
         [[operator, Map.get(circuit, op)], variable]
-        |> wire(operations, circuit)
 
       false ->
         case String.match?(op, @is_number) do
           true ->
             [[operator, String.to_integer(op)], variable]
-            |> wire(operations, circuit)
 
           false ->
             operations
             |> Enum.find(fn [_, v] -> op == v end)
-            |> wire(operations, circuit)
         end
     end
+    |> wire(operations, circuit)
   end
 
   defp wire([[operation], variable], operations, circuit) when is_binary(operation) do
