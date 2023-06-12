@@ -59,19 +59,20 @@ defmodule AdventOfCode.Day7 do
 
   defp wire([[op_1, operator, op_2], variable], operations, circuit)
        when is_binary(op_1) do
-    case Map.has_key?(circuit, op_1) do
-      true ->
-        [[Map.get(circuit, op_1), operator, op_2], variable]
-
-      false ->
+    circuit
+    |> Map.get(op_1)
+    |> case do
+      nil ->
         case String.match?(op_1, @is_number) do
           true ->
             [[String.to_integer(op_1), operator, op_2], variable]
 
           false ->
-            operations
-            |> Enum.find(fn [_, v] -> op_1 == v end)
+            Enum.find(operations, fn [_, v] -> op_1 == v end)
         end
+
+      value_op_1 ->
+        [[value_op_1, operator, op_2], variable]
     end
     |> wire(operations, circuit)
   end
