@@ -12,7 +12,7 @@ defmodule AdventOfCode.Year2022.Day3 do
     |> String.split("\n", trim: true)
     |> group_every_3()
     |> Enum.map(&match_groups/1)
-    |> match_group_priorites()
+    |> match_priorities()
   end
 
   defp split_half(s) do
@@ -25,12 +25,7 @@ defmodule AdventOfCode.Year2022.Day3 do
   end
 
   defp match_item([l1, l2]) do
-    for i1 <- l1, i2 <- l2, match = i1 == i2, uniq: true, do: {match, i1, i2}
-  end
-
-  defp match_priorities(items) do
-    all_priorities = low_priorities() ++ high_priorities()
-    for [{_, e, _}] <- items, {^e, n} <- all_priorities, do: n
+    for e <- l1, ^e <- l2, uniq: true, do: e
   end
 
   defp group_every_3(list) do
@@ -48,7 +43,7 @@ defmodule AdventOfCode.Year2022.Day3 do
     for e <- g1, ^e <- g2, ^e <- g3, uniq: true, do: e
   end
 
-  defp match_group_priorites(groups_matches) do
+  defp match_priorities(groups_matches) do
     all_priorities = low_priorities() ++ high_priorities()
     for [e] <- groups_matches, {^e, n} <- all_priorities, do: n
   end
