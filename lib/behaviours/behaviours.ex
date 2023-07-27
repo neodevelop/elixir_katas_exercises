@@ -19,13 +19,13 @@ end
 defmodule JSONParser do
   @behaviour Parser
 
-  def parse(str), do: IO.puts "parsing JSON"
+  def parse(str), do: IO.puts "Parsing JSON: #{str}"
   def extensions, do: ["json"]
 end
 
 defmodule YAMLParser do
   @behaviour Parser
 
-  def parse(str), do: IO.puts "parsing YML"
+  def parse(str), do: IO.puts "Parsing YML: #{str}"
   def extensions, do: ["yml"]
 end

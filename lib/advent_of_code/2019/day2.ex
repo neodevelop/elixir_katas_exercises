@@ -7,7 +7,7 @@ defmodule AdventOfCode.Year2019.Day2 do
     |> join()
   end
 
-  defp process(program_steps) do
+  defp process(_program_steps) do
     [2, 0, 0, 0, 99]
   end
 
