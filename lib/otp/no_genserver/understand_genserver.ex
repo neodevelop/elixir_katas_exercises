@@ -2,15 +2,18 @@ defmodule Speaker do
   def speak do
     receive do
       {:say, msg} ->
-        IO.puts msg
+        IO.puts(msg)
+
       _other ->
+        nil
         # throw away the message
     end
+
     speak
   end
 
   def handle_message({:say, msg}) do
-    IO.puts msg
+    IO.puts(msg)
   end
 
   def handle_message(_other) do
@@ -23,15 +26,16 @@ end
 
 defmodule ServerWithNoResponse do
   def start(callback_module) do
-    spawn fn ->
+    spawn(fn ->
       loop(callback_module)
-    end
+    end)
   end
 
   def loop(callback_module) do
     receive do
       msg -> callback_module.handle_message(msg)
     end
+
     loop(callback_module)
   end
 end
@@ -41,25 +45,28 @@ end
 
 defmodule PingPongGS do
   def handle_message(:ping, from) do
-    send from, :pong
+    send(from, :pong)
   end
+
   def handle_message(:pong, from) do
-    send from, :ping
+    send(from, :ping)
   end
 end
 
 defmodule ServerWithResponse do
   def start(callback_module) do
     parent = self
-    spawn fn ->
+
+    spawn(fn ->
       loop(callback_module, parent)
-    end
+    end)
   end
 
   def loop(callback_module, parent) do
     receive do
       msg -> callback_module.handle_message(msg, parent)
     end
+
     loop(callback_module, parent)
   end
 end
@@ -78,7 +85,7 @@ defmodule BankAccount do
   end
 
   def handle_message(:balance, from, balance) do
-    send from, {:balance, balance}
+    send(from, {:balance, balance})
     balance
   end
 end
@@ -86,9 +93,10 @@ end
 defmodule ServerWithResponseAndState do
   def start(callback_module, state) do
     parent = self
-    spawn fn ->
+
+    spawn(fn ->
       loop(callback_module, parent, state)
-    end
+    end)
   end
 
   def loop(callback_module, parent, state) do
@@ -106,4 +114,3 @@ end
 ## send account, :balance
 ## flush
 ## {:balance, 25}
-

@@ -6,9 +6,11 @@ defmodule Parallel do
   end
 
   defp spawn_process(item, parent, fun) do
-    pid = spawn_link fn ->
-      send parent, {self, fun.(item)}
-    end
+    pid =
+      spawn_link(fn ->
+        send(parent, {self, fun.(item)})
+      end)
+
     pid
   end
 
