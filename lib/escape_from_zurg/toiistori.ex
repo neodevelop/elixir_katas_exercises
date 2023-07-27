@@ -4,14 +4,14 @@ defmodule Toiistori do
 
   def is_the_slowest(toys) do
     toys
-    |> Enum.max_by(fn {k, v} ->
+    |> Enum.max_by(fn {_k, v} ->
       v
     end)
   end
 
   def is_the_fastest(toys) do
     toys
-    |> Enum.min_by(fn {k, v} ->
+    |> Enum.min_by(fn {_k, v} ->
       v
     end)
   end
@@ -28,7 +28,7 @@ defmodule Toiistori do
         time = time + the_time_for_this_pair(t1, t2)
         running_the_bridge(time, toys -- [t1], who_is_safe ++ [t1])
 
-      {_, _, the_rest} when length(the_rest) == 0 ->
+      {_, _, []} ->
         {_, last_time} = is_the_slowest([t1, t2])
         time = time + last_time
         time

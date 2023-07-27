@@ -1,17 +1,17 @@
 defmodule ProcessRing do
-
   def chain(0) do
     # Change for Process.exit
-    IO.puts "End of the line"
+    IO.puts("End of the line")
   end
 
   def chain(n) do
-    pid = spawn(__MODULE__, :chain, [n-1])
+    pid = spawn(__MODULE__, :chain, [n - 1])
+
     receive do
       msg ->
-        :timer.sleep 500
-        IO.puts "P#{n}, Msg: #{msg}"
-        send pid, msg
+        :timer.sleep(500)
+        IO.puts("P#{n}, Msg: #{msg}")
+        send(pid, msg)
     end
   end
 
@@ -46,7 +46,7 @@ defmodule ProcessRing do
   def first(n) do
     receive do
       msg ->
-        IO.puts "First"
+        IO.puts("First")
         second(n, msg)
     end
   end
@@ -54,7 +54,7 @@ defmodule ProcessRing do
   def second(m, msg) do
     receive do
       {message} ->
-        IO.puts "Receiving #{message} from send #{m} the number and initial msg #{msg}"
+        IO.puts("Receiving #{message} from send #{m} the number and initial msg #{msg}")
     end
   end
 
@@ -65,40 +65,43 @@ defmodule ProcessRing do
       receive do
         {next_id, link_pid} ->
           Logger.info("#{idx} linked to #{next_id} at process #{inspect(link_pid)}")
-          loop idx, {next_id, link_pid}
+          loop(idx, {next_id, link_pid})
+
         _ ->
-          Logger.info "Not recognized at idx"
-          loop idx
+          Logger.info("Not recognized at idx")
+          loop(idx)
       end
     end
 
     def loop(current_id, {_next_id, next_process} = next) do
       receive do
         {msg, 1} ->
-          Logger.info "#{msg} at 1"
-          loop current_id, next
+          Logger.info("#{msg} at 1")
+          loop(current_id, next)
+
         {msg, n} when n > 1 ->
-          Logger.info "#{msg} at #{n} at #{inspect(self)}"
-          send next_process, {msg, n-1}
-          loop current_id, next
+          Logger.info("#{msg} at #{n} at #{inspect(self())}")
+          send(next_process, {msg, n - 1})
+          loop(current_id, next)
+
         _ ->
-          Logger.info "Not recognized at id, tuple"
+          Logger.info("Not recognized at id, tuple")
       end
     end
-
   end
 
   defmodule RingCoordinator do
     require Logger
 
     def start(size) do
-      workers = 1..size |> Enum.map(&(spawn(RingWorker, :loop, [&1])))
+      workers = 1..size |> Enum.map(&spawn(RingWorker, :loop, [&1]))
+
       for {pid, idx} <- Enum.with_index(workers) do
-        next_idx = rem(idx+1, size)
-        send pid, {next_idx + 1, Enum.at(workers, next_idx)}
+        next_idx = rem(idx + 1, size)
+        send(pid, {next_idx + 1, Enum.at(workers, next_idx)})
       end
+
       workers
     end
   end
-
 end

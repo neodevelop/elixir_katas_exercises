@@ -5,7 +5,7 @@ defmodule GitHub.Coordinator do
       {:ok, result} ->
         new_results = results ++ [result]
         if Enum.count(new_results) == results_expected do
-          send self, :exit
+          send self(), :exit
         end
         loop(new_results, results_expected)
       :exit ->

@@ -9,7 +9,7 @@ defmodule Speaker do
         # throw away the message
     end
 
-    speak
+    speak()
   end
 
   def handle_message({:say, msg}) do
@@ -55,7 +55,7 @@ end
 
 defmodule ServerWithResponse do
   def start(callback_module) do
-    parent = self
+    parent = self()
 
     spawn(fn ->
       loop(callback_module, parent)
@@ -92,7 +92,7 @@ end
 
 defmodule ServerWithResponseAndState do
   def start(callback_module, state) do
-    parent = self
+    parent = self()
 
     spawn(fn ->
       loop(callback_module, parent, state)

@@ -6,18 +6,20 @@ defmodule GitHub.User do
   end
 
   @followers_url "https://api.github.com/users/:username/followers"
-  @http_options [ssl: [{:versions, [:'tlsv1.2']}], recv_timeout: 500]
-  @access_token Application.get_env(:elixir_katas_exercises, :access_token)
-  @headers ["Authorization": "token #{@access_token}"]
+  @http_options [ssl: [{:versions, [:"tlsv1.2"]}], recv_timeout: 500]
+  @access_token Application.compile_env(:elixir_katas_exercises, :access_token)
+  @headers [Authorization: "token #{@access_token}"]
 
   def loop do
     receive do
       {sender_id, username} ->
-        send sender_id, {:ok, followers_of(username)}
+        send(sender_id, {:ok, followers_of(username)})
+
       _ ->
         {:ok, "Unknown Message"}
     end
-    loop
+
+    loop()
   end
 
   def followers_of(username) do
@@ -40,11 +42,11 @@ defmodule GitHub.User do
 
   defp parse_response({:ok, %HTTPoison.Response{body: body, headers: _headers, status_code: 200}}) do
     body
-    |> JSON.decode
+    |> JSON.decode()
   end
 
   defp parse_response({_, error}) do
-    IO.inspect error
+    IO.inspect(error)
     raise "ops"
   end
 
@@ -58,5 +60,4 @@ defmodule GitHub.User do
     users = for {id, login} <- followers, do: new(id, login)
     %{user | followers: users}
   end
-
 end
