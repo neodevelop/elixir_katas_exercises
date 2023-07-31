@@ -16,10 +16,9 @@ defmodule GitHub.Organization do
 
   def members_of(organization_name) do
     organization_name
-    |> create_url
-    |> make_a_request
-    |> parse_response
-    |> extract_members_info
+    |> create_url()
+    |> make_a_request()
+    |> extract_members_info()
   end
 
   defp create_url(organization_name) do
@@ -28,18 +27,14 @@ defmodule GitHub.Organization do
   end
 
   defp make_a_request(url) do
-    HTTPoison.get(url, @headers, @http_options)
-  end
+    case HTTPoison.get(url, @headers, @http_options) do
+      {:ok, %HTTPoison.Response{body: body, headers: _headers, status_code: 200}} ->
+        body
+        |> JSON.decode()
 
-  defp parse_response({:ok, %HTTPoison.Response{body: body, headers: _headers, status_code: 200}}) do
-    body
-    |> JSON.decode()
-  end
-
-  defp parse_response({_, %HTTPoison.Response{body: body, headers: headers, status_code: _}}) do
-    IO.inspect(body)
-    IO.inspect(headers)
-    raise "ops"
+      {_, %HTTPoison.Response{body: _body, headers: _headers, status_code: _}} ->
+        %{}
+    end
   end
 
   defp extract_members_info({:ok, users_info}) do
