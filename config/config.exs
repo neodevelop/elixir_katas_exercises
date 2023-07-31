@@ -1,6 +1,6 @@
 # This file is responsible for configuring your application
 # and its dependencies with the aid of the Mix.Config module.
-use Mix.Config
+import Config
 
 config :elixir_katas_exercises, access_token: System.get_env("GITHUB_ACCESS_TOKEN")
 # This configuration is loaded before any dependency and is restricted
