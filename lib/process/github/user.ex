@@ -8,7 +8,7 @@ defmodule GitHub.User do
   @followers_url "https://api.github.com/users/:username/followers"
   @http_options [ssl: [{:versions, [:"tlsv1.2"]}], recv_timeout: 500]
   @access_token Application.compile_env(:elixir_katas_exercises, :access_token)
-  @headers [Authorization: "token #{@access_token}"]
+  @headers [{"Authorization", "token #{@access_token}"}]
 
   def loop do
     receive do
