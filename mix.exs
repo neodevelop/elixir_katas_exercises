@@ -31,7 +31,7 @@ defmodule ElixirKatasExercises.Mixfile do
   defp deps do
     [
       {:httpoison, "~> 0.10.0"},
-      {:json, "~> 1.0"}
+      {:json, "~> 1.4"}
     ]
   end
 end
