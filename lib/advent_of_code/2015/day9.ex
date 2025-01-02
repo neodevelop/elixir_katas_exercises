@@ -47,6 +47,6 @@ defmodule AdventOfCode.Day9 do
       routes
       |> Enum.min_by(& &1.distance)
 
-    [routes: routes, min: minimal]
+    {routes, minimal}
   end
 end
