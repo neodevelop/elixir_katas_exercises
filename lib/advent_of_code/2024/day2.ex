@@ -1,26 +1,26 @@
 defmodule AdventOfCode.Year2024.Day2 do
   def safe_reports(reports) do
     reports
-    |> String.split("\n", trim: true)
-    |> Enum.map(&String.split(&1, " "))
-    |> Enum.map(fn l -> Enum.map(l, &String.to_integer/1) end)
-    |> Enum.map(&compute_gaps/1)
-    |> Enum.filter(fn %{gaps: gaps, ordered: ordered} ->
-      Enum.all?(gaps, &(&1 > 0 && &1 <= 3)) && ordered
-    end)
+    |> parse_reports()
+    |> Enum.filter(&valid_report?/1)
     |> Enum.count()
   end
 
   def safe_reports_with_dampener(reports) do
     reports
-    |> String.split("\n", trim: true)
-    |> Enum.map(&String.split(&1, " "))
-    |> Enum.map(fn l -> Enum.map(l, &String.to_integer/1) end)
-    |> Enum.map(&compute_gaps/1)
+    |> parse_reports()
     |> classify_reports()
     |> apply_reactor()
     |> count_all()
     |> dbg()
+  end
+
+  defp parse_reports(reports) do
+    reports
+    |> String.split("\n", trim: true)
+    |> Enum.map(&String.split(&1, " "))
+    |> Enum.map(fn l -> Enum.map(l, &String.to_integer/1) end)
+    |> Enum.map(&compute_gaps/1)
   end
 
   defp compute_gaps(report) do
@@ -35,19 +35,15 @@ defmodule AdventOfCode.Year2024.Day2 do
   end
 
   defp classify_reports(reports) do
-    safe_reports =
-      reports
-      |> Enum.filter(fn %{gaps: gaps, ordered: ordered} ->
-        Enum.all?(gaps, &(&1 > 0 && &1 <= 3)) && ordered
-      end)
+    reports
+    |> Enum.split_with(&valid_report?/1)
+    |> then(fn {safe_reports, unsafe_reports} ->
+      %{safe: safe_reports, unsafe: unsafe_reports}
+    end)
+  end
 
-    unsafe_reports =
-      reports
-      |> Enum.reject(fn %{gaps: gaps, ordered: ordered} ->
-        Enum.all?(gaps, &(&1 > 0 && &1 <= 3)) && ordered
-      end)
-
-    %{safe: safe_reports, unsafe: unsafe_reports}
+  defp valid_report?(%{gaps: gaps, ordered: ordered}) do
+    Enum.all?(gaps, &(&1 > 0 && &1 <= 3)) && ordered
   end
 
   defp apply_reactor(%{unsafe: unsafe} = reports) do
@@ -66,19 +62,13 @@ defmodule AdventOfCode.Year2024.Day2 do
       List.delete_at(report, index)
     end)
     |> Enum.map(&compute_gaps/1)
-    |> Enum.find(fn %{gaps: gaps, ordered: ordered} ->
-      Enum.all?(gaps, &(&1 > 0 && &1 <= 3)) && ordered
-    end)
+    |> Enum.find(&valid_report?/1)
   end
 
   defp count_all(%{safe: safe, dampenered: dampenered} = reports),
     do: reports |> Map.put(:safe_count, Enum.count(safe) + Enum.count(dampenered))
 
   defp is_sorted?(report) do
-    cond do
-      report == Enum.sort(report) -> true
-      report == Enum.sort(report, &>/2) -> true
-      true -> false
-    end
+    report == Enum.sort(report) || report == Enum.sort(report, &>/2)
   end
 end
