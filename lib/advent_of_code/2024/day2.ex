@@ -55,7 +55,7 @@ defmodule AdventOfCode.Year2024.Day2 do
     reports |> Map.put(:dampenered, dampenered_reports)
   end
 
-  defp compute_gaps_with_dampener(%{list: report} = original_report) do
+  defp compute_gaps_with_dampener(%{list: report} = _original_report) do
     report
     |> Enum.with_index()
     |> Enum.map(fn {_e, index} ->

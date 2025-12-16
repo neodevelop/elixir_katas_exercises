@@ -1,5 +1,5 @@
 defmodule AdventOfCode.Year2023.Day1 do
-  @numbers ~s/one two three four five six seven eight nine/
+  # @numbers ~s/one two three four five six seven eight nine/
 
   def calibrate(input) do
     input

@@ -3,19 +3,19 @@ defmodule AdventOfCode.Day4 do
     s =
       cond do
         n >= 0 && n < 10 ->
-          '00000' ++ Integer.to_charlist(n)
+          ~c"00000" ++ Integer.to_charlist(n)
 
         n >= 10 && n < 100 ->
-          '0000' ++ Integer.to_charlist(n)
+          ~c"0000" ++ Integer.to_charlist(n)
 
         n >= 100 && n < 1000 ->
-          '000' ++ Integer.to_charlist(n)
+          ~c"000" ++ Integer.to_charlist(n)
 
         n >= 1000 && n < 10000 ->
-          '00' ++ Integer.to_charlist(n)
+          ~c"00" ++ Integer.to_charlist(n)
 
         n >= 10000 && n < 100_000 ->
-          '0' ++ Integer.to_charlist(n)
+          ~c"0" ++ Integer.to_charlist(n)
 
         true ->
           Integer.to_charlist(n)
@@ -27,10 +27,10 @@ defmodule AdventOfCode.Day4 do
   end
 
   def mining(secret) do
-    searchForSecret(secret, 0, '999999')
+    searchForSecret(secret, 0, ~c"999999")
   end
 
-  def searchForSecret(_secret, n, '000000') do
+  def searchForSecret(_secret, n, ~c"000000") do
     n - 1
   end
 
@@ -48,14 +48,14 @@ defmodule AdventOfCode.Day4 do
   def first_part(secret) do
     1..1_000_000
     |> Stream.map(fn x -> {x, AdventOfCode.Day4.makeTheHash(secret, x)} end)
-    |> Stream.filter(fn {_, h} -> Enum.take(h, 5) == '00000' end)
+    |> Stream.filter(fn {_, h} -> Enum.take(h, 5) == ~c"00000" end)
     |> Enum.to_list()
   end
 
   def second_part(secret) do
     1..10_000_000
     |> Stream.map(fn x -> {x, AdventOfCode.Day4.makeTheHash(secret, x)} end)
-    |> Stream.filter(fn {_, h} -> Enum.take(h, 6) == '000000' end)
+    |> Stream.filter(fn {_, h} -> Enum.take(h, 6) == ~c"000000" end)
     |> Enum.to_list()
   end
 end
